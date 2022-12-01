@@ -31,9 +31,9 @@ func process(r io.Reader) (int, error) {
 
 			if eof {
 				break
-			} else {
-				continue
 			}
+
+			continue
 		}
 
 		cnt, err := strconv.Atoi(scanner.Text())
