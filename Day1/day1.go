@@ -30,7 +30,7 @@ func main() {
 		} else {
 			res, err := strconv.Atoi(line)
 			if err != nil {
-				panic(err)
+				log.Fatal(err)
 			}
 			current += res
 		}
@@ -40,7 +40,7 @@ func main() {
 	slice := top[:]
 	sort.Sort(sort.Reverse(sort.IntSlice(slice)))
 
-	print(top[0] + top[1] + top[2])
+	log.Println(top[0] + top[1] + top[2])
 
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
