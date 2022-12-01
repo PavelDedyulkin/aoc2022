@@ -2,11 +2,51 @@ package main
 
 import (
 	"bufio"
+	"io"
 	"log"
 	"os"
 	"sort"
 	"strconv"
 )
+
+func process(r io.Reader) (int, error) {
+
+	scanner := bufio.NewScanner(r)
+	current := 0
+
+	var top [4]int
+
+	for {
+
+		eof := !scanner.Scan()
+
+		currentLoaded := scanner.Text() == ""
+
+		if currentLoaded {
+
+			top[len(top)-1] = current
+			slice := top[:]
+			sort.Sort(sort.Reverse(sort.IntSlice(slice)))
+			current = 0
+
+			if eof {
+				break
+			} else {
+				continue
+			}
+		}
+
+		cnt, err := strconv.Atoi(scanner.Text())
+		if err != nil {
+			return 0, err
+		}
+		current += cnt
+
+	}
+
+	return top[0] + top[1] + top[2], scanner.Err()
+
+}
 
 func main() {
 	file, err := os.Open("input1.txt")
@@ -15,34 +55,11 @@ func main() {
 	}
 	defer file.Close()
 
-	scanner := bufio.NewScanner(file)
+	result, err := process(file)
 
-	current := 0
-
-	var top [4]int
-	for scanner.Scan() {
-		line := scanner.Text()
-		if line == "" {
-			top[3] = current
-			slice := top[:]
-			sort.Sort(sort.Reverse(sort.IntSlice(slice)))
-			current = 0
-		} else {
-			res, err := strconv.Atoi(line)
-			if err != nil {
-				log.Fatal(err)
-			}
-			current += res
-		}
-	}
-
-	top[3] = current
-	slice := top[:]
-	sort.Sort(sort.Reverse(sort.IntSlice(slice)))
-
-	log.Println(top[0] + top[1] + top[2])
-
-	if err := scanner.Err(); err != nil {
+	if err != nil {
 		log.Fatal(err)
 	}
+
+	log.Println(result)
 }
